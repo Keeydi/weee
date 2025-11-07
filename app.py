@@ -31,8 +31,27 @@ app.secret_key = os.getenv('SECRET_KEY', 'secret123')
 # app.py (Near the top, after db setup)
 
 # -------------------- DATABASE SETUP (SQLite) --------------------
-# Use SQLite from .env file, fallback to default SQLite path
-database_url = os.getenv('DATABASE_URL', 'sqlite:///instance/smarthire.db')
+# Ensure instance directory exists
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+INSTANCE_DIR = os.path.join(BASE_DIR, 'instance')
+os.makedirs(INSTANCE_DIR, exist_ok=True)
+
+# Use absolute path for SQLite database (Windows-compatible)
+# Always use absolute path to avoid issues with relative paths
+default_db_path = os.path.join(INSTANCE_DIR, 'smarthire.db')
+# Convert to forward slashes for SQLite URI
+default_db_path_uri = default_db_path.replace('\\', '/')
+# Always use absolute path, ignore DATABASE_URL from .env if it's relative
+env_db_url = os.getenv('DATABASE_URL', '')
+if env_db_url and (env_db_url.startswith('sqlite:///') and not env_db_url.startswith('sqlite:///C:') and not env_db_url.startswith('sqlite:///D:')):
+    # If .env has a relative path, ignore it and use absolute
+    database_url = f'sqlite:///{default_db_path_uri}'
+elif env_db_url:
+    # Use .env value if it's already absolute
+    database_url = env_db_url
+else:
+    # Use 3 slashes for absolute path: sqlite:///C:/path/to/db.db
+    database_url = f'sqlite:///{default_db_path_uri}'
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -254,14 +273,12 @@ class Screening(db.Model):
         return f"<Screening id={self.id} applicant='{self.applicant_name}' score={self.match_score}%>"
 
 # -------------------- FILE FOLDERS --------------------
-# Define the base directory of the current script (app.py)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# UPLOAD_FOLDER is now C:/xampp/htdocs/smarthire/myproject/static/uploads
+# BASE_DIR is already defined above, reuse it
+# UPLOAD_FOLDER is now static/uploads
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# SCREENING_FOLDER is C:/xampp/htdocs/smarthire/myproject/static/screenings
+# SCREENING_FOLDER is static/screenings
 SCREENING_FOLDER = os.path.join(BASE_DIR, "static", "screenings")
 os.makedirs(SCREENING_FOLDER, exist_ok=True)
 
@@ -1566,7 +1583,20 @@ def update_user_record(record_type, record_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 # -------------------- RUN APP --------------------
 if __name__ == "__main__":
-    with app.app_context():
-        # hash_plaintext_passwords()   <-- remove/comment this
-        db.create_all()
-    app.run(debug=True)
+    try:
+        with app.app_context():
+            # hash_plaintext_passwords()   <-- remove/comment this
+            db.create_all()
+            print("=" * 60)
+            print("SmartHire Flask Server Starting...")
+            print("=" * 60)
+            print(f"Database: {app.config['SQLALCHEMY_DATABASE_URI']}")
+            print("Server will be available at:")
+            print("  - http://localhost:5000")
+            print("  - http://127.0.0.1:5000")
+            print("=" * 60)
+        app.run(debug=True, host='0.0.0.0', port=5000)
+    except Exception as e:
+        print(f"ERROR starting server: {e}")
+        import traceback
+        traceback.print_exc()
