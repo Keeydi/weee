@@ -1,0 +1,26 @@
+# SmartHire - Requirements for Easy Deployment Platforms
+# This file includes PostgreSQL support for Render, Railway, Fly.io, etc.
+
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.5
+Flask-Mail==0.9.1
+PyPDF2==3.0.1
+spacy==3.7.2
+scikit-learn==1.3.2
+
+# Database Drivers - Support both MySQL and PostgreSQL
+pymysql==1.1.0  # For MySQL (local development, Hostinger)
+psycopg2-binary==2.9.9  # For PostgreSQL (Render, Railway, Fly.io, Heroku)
+mysql-connector-python==8.2.0  # Alternative MySQL driver
+
+# Production Server
+gunicorn==21.2.0  # WSGI server for production
+
+# Core Dependencies
+Werkzeug==3.0.1
+SQLAlchemy==2.0.23
+
+# Note: When deploying to Render/Railway/Fly.io, they will use PostgreSQL
+# When deploying to Hostinger/PythonAnywhere, use MySQL (pymysql)
+

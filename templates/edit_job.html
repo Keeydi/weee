@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Job</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #E8F1FD; margin: 0; padding: 0; }
+    .container { max-width: 700px; margin: 50px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #08106E; }
+    form { display: flex; flex-direction: column; gap: 15px; }
+    label { font-weight: bold; color: #08106E; }
+    input, textarea, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+    }
+    textarea { resize: vertical; height: 100px; }
+    .button-group {
+      display: flex;
+      justify-content: flex-start;
+      gap: 15px; /* space between buttons */
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      text-align: center;
+      display: inline-block;
+      line-height: normal;
+    }
+    .save-btn { background: #08106E; color: white; }
+    .save-btn:hover { background: #2a35b5; }
+    .cancel-btn { background: #ccc; color: black; text-decoration: none; display: inline-block; }
+    .cancel-btn:hover { background: #bbb; }
+
+    /* Toast Notification Styles */
+    .toast-container {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 10000;
+        pointer-events: none;
+    }
+    .toast {
+        background: #08106E;
+        color: white;
+        padding: 14px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        margin-bottom: 10px;
+        opacity: 0;
+        transform: translateX(120%);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        min-width: 250px;
+        max-width: 400px;
+        font-weight: 500;
+        pointer-events: auto;
+    }
+    .toast.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    .toast.success {
+        background: #28a745;
+    }
+    .toast.error {
+        background: #dc3545;
+    }
+    .toast.warning {
+        background: #ffc107;
+        color: #000;
+    }
+    .toast.info {
+        background: #17a2b8;
+    }
+  </style>
+</head>
+<body>
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+  <div class="container">
+    <h1>Edit Job Posting</h1>
+    <form action="{{ url_for('edit_job', job_id=job.id) }}" method="POST">
+      <label>Job Title</label>
+      <input type="text" name="title" value="{{ job.title }}" required>
+
+	<label>Company Name</label>
+	<input type="text" name="company" value="{{ job.company if job is defined else '' }}" required>
+
+      <label>Location</label>
+      <input type="text" name="location" value="{{ job.location }}" required>
+
+      <label>Job Type</label>
+      <select name="job_type">
+        <option value="Full-Time" {% if job.job_type == "Full-Time" %}selected{% endif %}>Full-Time</option>
+        <option value="Part-Time" {% if job.job_type == "Part-Time" %}selected{% endif %}>Part-Time</option>
+        <option value="Internship" {% if job.job_type == "Internship" %}selected{% endif %}>Internship</option>
+        <option value="Contract" {% if job.job_type == "Contract" %}selected{% endif %}>Contract</option>
+      </select>
+
+      <label>Salary</label>
+      <input type="text" name="salary" value="{{ job.salary }}">
+
+      <label>Job Description</label>
+      <textarea name="description">{{ job.description }}</textarea>
+
+      <div class="button-group">
+        <button type="submit" class="btn save-btn" onclick="showToast('Saving changes...', 'info', 2000)">Save Changes</button>
+        <a href="{{ url_for('employer_dashboard') }}" class="btn cancel-btn" onclick="showToast('Cancelled', 'warning', 1500)">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+<script>
+    // Toast Notification Function
+    function showToast(message, type = 'default', duration = 3000) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        setTimeout(() => toast.classList.add('show'), 10);
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => container.removeChild(toast), 400);
+        }, duration);
+    }
+</script>
+</body>
+</html>

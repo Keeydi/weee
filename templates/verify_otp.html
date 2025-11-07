@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}Verify Email{% endblock %}
+
+{% block content %}
+<h2>Verify Your Email</h2>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div>
+      {% for category, message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<p style="text-align: center; color: #555; margin-bottom: 20px;">
+    We've sent a verification code to:<br>
+    <strong style="color: #08106E;">{{ email }}</strong>
+</p>
+
+<form action="{{ url_for('verify_otp') }}" method="POST" id="otpForm">
+    <div class="form-group">
+        <label for="otp" style="display: block; margin-bottom: 8px; font-weight: bold; color: #08106E;">Enter Verification Code</label>
+        <input 
+            type="text" 
+            id="otp" 
+            name="otp" 
+            placeholder="000000" 
+            required 
+            maxlength="6" 
+            pattern="[0-9]{6}"
+            style="text-align: center; font-size: 24px; letter-spacing: 8px; font-weight: bold;"
+            autocomplete="off"
+            oninput="this.value = this.value.replace(/[^0-9]/g, ''); validateOTP()"
+        >
+        <small style="display: block; margin-top: 8px; color: #666; font-size: 12px;">
+            Enter the 6-digit code sent to your email
+        </small>
+    </div>
+
+    <button type="submit" class="verify-btn" onclick="showToast('Verifying code...', 'info', 2000)">Verify Email</button>
+</form>
+
+<div style="text-align: center; margin-top: 20px;">
+    <form action="{{ url_for('resend_otp') }}" method="POST" style="display: inline;">
+        <button type="submit" class="resend-btn" onclick="showToast('Resending code...', 'info', 2000)">Resend Code</button>
+    </form>
+</div>
+
+<div class="links" style="margin-top: 20px;">
+    <a href="{{ url_for('signup') }}">Back to Sign Up</a>
+</div>
+
+<style>
+/* Alerts */
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.alert.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.alert.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Form layout */
+form {
+    max-width: 400px;
+    margin: auto;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+input {
+    width: 100%;
+    padding: 15px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+input:focus {
+    border-color: #08106E;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(8, 16, 110, 0.1);
+}
+
+.verify-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    background: #08106E;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+.verify-btn:hover {
+    background: #0b158a;
+}
+
+.resend-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    background: transparent;
+    color: #08106E;
+    border: 2px solid #08106E;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.resend-btn:hover {
+    background: #08106E;
+    color: #fff;
+}
+
+.links {
+    text-align: center;
+}
+.links a {
+    color: #08106E;
+    text-decoration: none;
+    font-size: 14px;
+}
+.links a:hover {
+    text-decoration: underline;
+}
+</style>
+
+<script>
+function validateOTP() {
+    const otpInput = document.getElementById('otp');
+    const otpValue = otpInput.value;
+    
+    // Ensure only 6 digits
+    if (otpValue.length === 6) {
+        otpInput.style.borderColor = '#28a745';
+    } else {
+        otpInput.style.borderColor = '#ccc';
+    }
+}
+
+// Auto-focus on OTP input
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('otp').focus();
+});
+</script>
+
+{% endblock %}
+
+

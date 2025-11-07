@@ -1,0 +1,81 @@
+# SmartHire - Hostinger Deployment Commands
+# Copy and paste these commands in Hostinger SSH Terminal
+
+# ============================================
+# STEP 1: Navigate to Project
+# ============================================
+cd ~/public_html/smarthire
+
+# ============================================
+# STEP 2: Create Virtual Environment
+# ============================================
+python3 -m venv venv
+source venv/bin/activate
+
+# ============================================
+# STEP 3: Install Dependencies
+# ============================================
+pip install --upgrade pip
+pip install -r requirements.txt
+pip install gunicorn
+
+# ============================================
+# STEP 4: Download spaCy Model
+# ============================================
+python -m spacy download en_core_web_sm
+
+# If above fails, use:
+# pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
+
+# ============================================
+# STEP 5: Create Directories
+# ============================================
+mkdir -p logs
+mkdir -p static/uploads
+mkdir -p static/screenings
+mkdir -p uploads
+mkdir -p resumes
+mkdir -p screened_resumes
+
+# ============================================
+# STEP 6: Set Permissions
+# ============================================
+chmod -R 755 static templates
+chmod -R 777 uploads resumes static/uploads static/screenings
+
+# ============================================
+# STEP 7: Initialize Database
+# ============================================
+python << EOF
+from app import app, db
+with app.app_context():
+    db.create_all()
+    print("✅ Database tables created successfully!")
+EOF
+
+# ============================================
+# STEP 8: Test Gunicorn (Optional)
+# ============================================
+# gunicorn -c gunicorn_config.py wsgi:app
+# Press Ctrl+C to stop after testing
+
+# ============================================
+# STEP 9: Setup PM2 (Keep App Running)
+# ============================================
+npm install -g pm2
+pm2 start gunicorn --name smarthire -- -c gunicorn_config.py wsgi:app
+pm2 save
+pm2 startup
+
+# Follow the command that pm2 startup gives you, then run it
+
+# ============================================
+# STEP 10: Check Status
+# ============================================
+pm2 list
+pm2 logs smarthire
+
+# ============================================
+# DONE! Your app should be live now!
+# ============================================
+
