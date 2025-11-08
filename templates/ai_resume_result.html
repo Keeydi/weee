@@ -13,61 +13,65 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
+      background: #E8F1FD;
       padding: 20px;
       color: #1a202c;
       min-height: 100vh;
       position: relative;
     }
 
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 100px;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 30px;
-      color: white;
+      margin-bottom: 40px;
+      color: #08106E;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 20px;
     }
 
     .header h1 {
       font-size: 2.5rem;
       font-weight: 700;
       margin-bottom: 10px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      color: #08106E;
     }
 
     .header p {
       font-size: 1.1rem;
-      opacity: 0.9;
+      color: #6b7aa8;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
+    .content-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .left-panel {
+      display: flex;
+      flex-direction: column;
       gap: 25px;
-      margin-bottom: 100px;
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border: 1px solid rgba(255,255,255,0.3);
+    .right-panel {
+      display: flex;
+      flex-direction: column;
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 25px 70px rgba(0,0,0,0.2);
+    .section {
+      padding: 0;
+      border: none;
+      background: transparent;
     }
 
     .card-header {
@@ -79,12 +83,30 @@
       border-bottom: 2px solid #e2e8f0;
     }
 
-    .card-header h2 {
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .section-header h2 {
       font-size: 1.5rem;
-      color: #2d3748;
+      color: #08106E;
       font-weight: 600;
       margin: 0;
     }
+
+    .score-section .section-header {
+      border-bottom: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .score-section .section-header h2 {
+      color: white;
+    }
+
 
     .card-header .icon {
       font-size: 1.8rem;
@@ -114,27 +136,11 @@
       flex: 1;
     }
 
-    .score-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .score-section {
+      background: #08106E;
       color: white;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .score-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-      animation: pulse 3s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.5; }
-      50% { transform: scale(1.1); opacity: 0.8; }
+      border-radius: 12px;
+      padding: 25px;
     }
 
     .score-display {
@@ -179,7 +185,14 @@
       background: white;
       border-radius: 10px;
       transition: width 1s ease;
-      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    .section:not(.score-section) .progress-bar {
+      background: #e0e0e0;
+    }
+
+    .section:not(.score-section) .progress-fill {
+      background: #08106E;
     }
 
     .skills-list {
@@ -190,32 +203,20 @@
     }
 
     .skill-badge {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #08106E;
       color: white;
       padding: 8px 16px;
       border-radius: 20px;
       font-size: 0.9rem;
       font-weight: 500;
-      box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
-      transition: transform 0.2s ease;
+      transition: all 0.2s ease;
     }
 
     .skill-badge:hover {
-      transform: scale(1.05);
+      background: #0b158a;
+      transform: translateY(-2px);
     }
 
-    .resume-preview-card {
-      grid-column: span 2;
-    }
-
-    .resume-preview-card iframe {
-      width: 100%;
-      height: 700px;
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      background: white;
-    }
 
     .highlight-box {
       background: #f8f9fa;
@@ -240,21 +241,20 @@
     }
 
     .highlight-box::-webkit-scrollbar-thumb {
-      background: #667eea;
+      background: #08106E;
       border-radius: 10px;
     }
 
     .highlight-box::-webkit-scrollbar-thumb:hover {
-      background: #764ba2;
+      background: #0b158a;
     }
 
     mark {
-      background: linear-gradient(120deg, #FFD54F 0%, #FFC107 100%);
+      background: #FFD54F;
       color: #1a202c;
       padding: 2px 6px;
       border-radius: 4px;
       font-weight: 600;
-      box-shadow: 0 2px 4px rgba(255, 213, 79, 0.3);
     }
 
     .back-btn {
@@ -265,19 +265,20 @@
       align-items: center;
       gap: 10px;
       padding: 15px 30px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #08106E;
       color: white;
       text-decoration: none;
-      border-radius: 50px;
+      border-radius: 8px;
       font-weight: 600;
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 4px 12px rgba(8, 16, 110, 0.3);
       transition: all 0.3s ease;
       z-index: 1000;
     }
 
     .back-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+      background: #0b158a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(8, 16, 110, 0.4);
     }
 
     .stats-grid {
@@ -290,14 +291,18 @@
     .stat-item {
       text-align: center;
       padding: 15px;
-      background: rgba(102, 126, 234, 0.1);
+      background: rgba(8, 16, 110, 0.1);
       border-radius: 12px;
     }
 
     .stat-value {
       font-size: 2rem;
       font-weight: 700;
-      color: #667eea;
+      color: #08106E;
+    }
+
+    .score-section .stat-value {
+      color: white;
     }
 
     .stat-label {
@@ -316,11 +321,11 @@
     }
 
     .toast {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #08106E;
       color: white;
       padding: 16px 24px;
       border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       margin-bottom: 10px;
       opacity: 0;
       transform: translateX(120%);
@@ -329,7 +334,6 @@
       max-width: 400px;
       font-weight: 500;
       pointer-events: auto;
-      backdrop-filter: blur(10px);
     }
 
     .toast.show {
@@ -338,29 +342,27 @@
     }
 
     .toast.success {
-      background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+      background: #28a745;
     }
 
     .toast.error {
-      background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+      background: #dc3545;
     }
 
     .toast.warning {
-      background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+      background: #ffc107;
+      color: #000;
     }
 
     .toast.info {
-      background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+      background: #17a2b8;
     }
 
     @media (max-width: 768px) {
-      .container {
+      .content-grid {
         grid-template-columns: 1fr;
       }
 
-      .resume-preview-card {
-        grid-column: span 1;
-      }
 
       .header h1 {
         font-size: 2rem;
@@ -371,6 +373,10 @@
         left: 20px;
         padding: 12px 24px;
         font-size: 0.9rem;
+      }
+
+      .main-container {
+        padding: 20px;
       }
     }
 
@@ -391,111 +397,104 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <div class="header">
-    <h1>🎯 AI Resume Screening Result</h1>
-    <p>Intelligent candidate analysis powered by machine learning</p>
-  </div>
+  <div class="main-container">
+    <div class="header">
+      <h1>🎯 AI Resume Screening Result</h1>
+      <p>Intelligent candidate analysis powered by machine learning</p>
+    </div>
 
-  <div class="container">
-    <!-- Applicant Information Card -->
-    <div class="card">
-      <div class="card-header">
-        <span class="icon">👤</span>
-        <h2>Applicant Information</h2>
-      </div>
-      <div class="info-item">
-        <span class="label">📝 Name:</span>
-        <span class="value">{{ applicant_name | default("N/A") }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">📧 Email:</span>
-        <span class="value">{{ email | default("Not Detected") }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">📞 Phone:</span>
-        <span class="value">
-          {% set phone_digits = phone|replace(' ', '')|replace('-', '')|replace('(', '')|replace(')', '') %}
-          {% if phone_digits|length == 10 %}
-            0{{ phone_digits }}
-          {% elif phone_digits|length == 11 %}
-            {{ phone_digits }}
+    <div class="content-grid">
+      <!-- Left Panel: Contains 3 sections stacked -->
+      <div class="left-panel">
+        <!-- Applicant Information -->
+        <div class="section">
+          <div class="section-header">
+            <span class="icon">👤</span>
+            <h2>Applicant Information</h2>
+          </div>
+          <div class="info-item">
+            <span class="label">📝 Name:</span>
+            <span class="value">{{ applicant_name | default("N/A") }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">📧 Email:</span>
+            <span class="value">{{ email | default("Not Detected") }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">📞 Phone:</span>
+            <span class="value">
+              {% set phone_digits = phone|replace(' ', '')|replace('-', '')|replace('(', '')|replace(')', '') %}
+              {% if phone_digits|length == 10 %}
+                0{{ phone_digits }}
+              {% elif phone_digits|length == 11 %}
+                {{ phone_digits }}
+              {% else %}
+                {{ phone | default("Not Detected") }}
+              {% endif %}
+            </span>
+          </div>
+        </div>
+
+        <!-- Matched Skills -->
+        <div class="section">
+          <div class="section-header">
+            <span class="icon">✅</span>
+            <h2>Matched Skills</h2>
+          </div>
+          {% if matched_skills %}
+            <div class="skills-list">
+              {% for skill in matched_skills %}
+                <span class="skill-badge">{{ skill }}</span>
+              {% endfor %}
+            </div>
           {% else %}
-            {{ phone | default("Not Detected") }}
+            <div class="empty-state">
+              <div class="empty-state-icon">🔍</div>
+              <p>No skills matched</p>
+            </div>
           {% endif %}
-        </span>
-      </div>
-    </div>
+        </div>
 
-    <!-- Match Score Card -->
-    <div class="card score-card">
-      <div class="score-display">
-        <div class="card-header" style="border-color: rgba(255,255,255,0.3);">
-          <span class="icon">📊</span>
-          <h2 style="color: white;">Match Score</h2>
-        </div>
-        <div class="score-circle">
-          <div class="score-value">{{ "%.1f"|format(score) }}%</div>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: {{ score }}%"></div>
-        </div>
-        <div class="score-label">Compatibility Rating</div>
-        <div class="stats-grid" style="margin-top: 25px;">
-          <div class="stat-item" style="background: rgba(255,255,255,0.15);">
-            <div class="stat-value" style="color: white;">{{ matched_skills|length }}</div>
-            <div class="stat-label" style="color: rgba(255,255,255,0.9);">Skills Matched</div>
+        <!-- Match Score -->
+        <div class="section score-section">
+          <div class="score-display">
+            <div class="section-header">
+              <span class="icon">📊</span>
+              <h2>Match Score</h2>
+            </div>
+            <div class="score-circle">
+              <div class="score-value">{{ "%.1f"|format(score) }}%</div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: {{ score }}%"></div>
+            </div>
+            <div class="score-label">Compatibility Rating</div>
+            <div class="stats-grid" style="margin-top: 25px;">
+              <div class="stat-item" style="background: rgba(255,255,255,0.15);">
+                <div class="stat-value" style="color: white;">{{ matched_skills|length }}</div>
+                <div class="stat-label" style="color: rgba(255,255,255,0.9);">Skills Matched</div>
+              </div>
+              <div class="stat-item" style="background: rgba(255,255,255,0.15);">
+                <div class="stat-value" style="color: white;">{{ skills_count }}</div>
+                <div class="stat-label" style="color: rgba(255,255,255,0.9);">Total Skills</div>
+              </div>
+            </div>
           </div>
-          <div class="stat-item" style="background: rgba(255,255,255,0.15);">
-            <div class="stat-value" style="color: white;">{{ skills_count }}</div>
-            <div class="stat-label" style="color: rgba(255,255,255,0.9);">Total Skills</div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Parsed & Highlighted Resume Text -->
+      <div class="right-panel">
+        <div class="section">
+          <div class="section-header">
+            <span class="icon">📜</span>
+            <h2>Parsed & Highlighted Resume Text</h2>
+          </div>
+          <div class="highlight-box">
+            {% set formatted_resume = highlighted_resume.replace('\n\n', '</p><p>').replace('\n', '<br>') %}
+            <p>{{ formatted_resume|safe }}</p>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Matched Skills Card -->
-    <div class="card">
-      <div class="card-header">
-        <span class="icon">✅</span>
-        <h2>Matched Skills</h2>
-      </div>
-      {% if matched_skills %}
-        <div class="skills-list">
-          {% for skill in matched_skills %}
-            <span class="skill-badge">{{ skill }}</span>
-          {% endfor %}
-        </div>
-      {% else %}
-        <div class="empty-state">
-          <div class="empty-state-icon">🔍</div>
-          <p>No skills matched</p>
-        </div>
-      {% endif %}
-    </div>
-
-    <!-- Resume Preview Card -->
-    <div class="card resume-preview-card">
-      <div class="card-header">
-        <span class="icon">📄</span>
-        <h2>Resume Preview</h2>
-      </div>
-      <iframe 
-        src="{{ url_for('screened_file', filename=resume_filename) }}" 
-        title="Resume Preview"
-      >
-        <p>Your browser doesn't support embedded documents. <a href="{{ url_for('screened_file', filename=resume_filename) }}">Download the file.</a></p>
-      </iframe>
-    </div>
-
-    <!-- Highlighted Text Card -->
-    <div class="card" style="grid-column: span 2;">
-      <div class="card-header">
-        <span class="icon">📜</span>
-        <h2>Parsed & Highlighted Resume Text</h2>
-      </div>
-      <div class="highlight-box">
-        {% set formatted_resume = highlighted_resume.replace('\n\n', '</p><p>').replace('\n', '<br>') %}
-        <p>{{ formatted_resume|safe }}</p>
       </div>
     </div>
   </div>

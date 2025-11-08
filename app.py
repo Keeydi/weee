@@ -233,13 +233,16 @@ class Resume(db.Model):
     filename = db.Column(db.String(255), nullable=False) 
     owner_name = db.Column(db.String(255), nullable=False)
     applicant_id = db.Column(db.Integer, db.ForeignKey('applicant.user_id'), nullable=True)  # Connect to Applicant
+    job_id = db.Column(db.Integer, db.ForeignKey('Job.id'), nullable=True)  # Connect to Job (for uploaded resumes)
     uploaded_at = db.Column(db.DateTime, default=func.now())
     
     # Relationship to Applicant
     applicant = db.relationship('Applicant', foreign_keys=[applicant_id], backref='resumes')
+    # Relationship to Job
+    job = db.relationship('Job', backref='resumes')
     
     def __repr__(self):
-        return f"<Resume id={self.id} owner='{self.owner_name}' applicant_id={self.applicant_id}>"
+        return f"<Resume id={self.id} owner='{self.owner_name}' applicant_id={self.applicant_id} job_id={self.job_id}>"
 
 class Screening(db.Model):
     __tablename__ = 'screening'
@@ -547,7 +550,7 @@ def employer_dashboard():
     # Fetches jobs posted by this employer
     jobs_list = Job.query.filter_by(employer_id=employer.id).order_by(Job.created_at.desc()).all()
 
-    resumes_list = Resume.query.all()
+    resumes_list = Resume.query.options(joinedload(Resume.job)).all()
     # Load job and employer relationships for screenings - filter by current employer
     screenings_list = Screening.query.options(
         joinedload(Screening.job),
@@ -1258,10 +1261,11 @@ def upload_screening():
         matched_professions = extract_professions(resume_text)
         final_matched_skills = list(set(matched_skills + matched_professions))
         
-        # 5. CREATE A TEMPORARY RESUME RECORD (Now linked to a REAL Applicant ID)
+        # 5. CREATE A RESUME RECORD (linked to Job if provided)
         new_resume = Resume(
             filename=filename, 
-            owner_name=applicant_name
+            owner_name=applicant_name,
+            job_id=job_id  # Save the job_id if a job was selected
         )
         db.session.add(new_resume)
         db.session.flush() # Get the new_resume.id before commit
@@ -1547,6 +1551,31 @@ def edit_profile():
         flash("Profile updated successfully!", "success")
         return redirect(url_for('applicant_dashboard'))
     return render_template('applicant_profile.html', applicant=applicant)
+
+@app.route('/employer/edit-profile', methods=['GET', 'POST'])
+def edit_employer_profile():
+    """Edit employer profile - for employer users"""
+    if 'user_id' not in session or session.get('role') != 'employer':
+        flash("Please log in as an employer.", "error")
+        return redirect(url_for("login"))
+    
+    employer = Employer.query.filter_by(user_id=session['user_id']).first()
+    if not employer:
+        flash("Employer profile not found.", "error")
+        return redirect(url_for("employer_dashboard"))
+    
+    if request.method == 'POST':
+        employer.fullname = request.form.get('fullname') or employer.fullname
+        employer.email = request.form.get('email') or employer.email
+        employer.company = request.form.get('company') or employer.company
+        employer.phone = request.form.get('phone') or employer.phone
+        employer.website = request.form.get('website') or employer.website
+        
+        db.session.commit()
+        flash("Profile updated successfully!", "success")
+        return redirect(url_for('employer_dashboard'))
+    
+    return render_template('employer_profile_edit.html', employer=employer)
 
 @app.route('/update_user_record/<string:record_type>/<int:record_id>', methods=['POST'])
 def update_user_record(record_type, record_id):
